@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart QR Pro - Branded Short Link</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #0b0f1a;
+      --card: #161b2c;
+      --primary: #6366f1;
+      --accent: #f59e0b;
+      --success: #22c55e;
+      --text: #ffffff;
+      --border: #2d334a;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding-bottom: 50px;
+    }
+
+    .ad-top { margin: 15px 0; width: 320px; min-height: 50px; text-align: center; }
+    .ad-bottom { margin: 30px 0; width: 100%; max-width: 400px; text-align: center; }
+
+    .promo-btn {
+      background: linear-gradient(90deg, #f59e0b, #ef4444);
+      color: white; padding: 12px 25px; border-radius: 50px;
+      text-decoration: none; font-weight: bold; margin-bottom: 20px;
+      display: inline-flex; align-items: center; gap: 10px;
+      animation: pulse 1.5s infinite; box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+    }
+
+    @keyframes pulse { 0% { transform: scale(1); } 70% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+    .main-card {
+      background: var(--card); width: 90%; max-width: 420px;
+      padding: 30px; border-radius: 24px; border: 1px solid var(--border);
+      text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+
+    textarea {
+      width: 100%; height: 100px; background: #0b0f1a; border: 1px solid var(--border);
+      color: #cbd5e1; padding: 15px; border-radius: 15px; resize: none;
+      margin-bottom: 15px; box-sizing: border-box; outline: none;
+    }
+
+    .btn {
+      width: 100%; padding: 15px; border-radius: 12px; border: none;
+      font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 1rem;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-success { background: var(--success); color: white; margin-top: 15px; }
+
+    /* কাস্টম শর্ট লিংক বক্স */
+    #short-box {
+      background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px;
+      margin-top: 20px; border: 1px dashed var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    #shortUrl { color: #22c55e; font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+    .copy-btn {
+      background: var(--primary); border: none; color: white; padding: 6px 12px;
+      border-radius: 8px; cursor: pointer; font-size: 12px; margin-left: 10px; transition: 0.2s;
+    }
+    .copy-btn:active { transform: scale(0.9); }
+
+    /* টোস্ট এনিমেশন */
+    #toast {
+      position: fixed; bottom: 80px; background: var(--success);
+      color: white; padding: 10px 20px; border-radius: 50px;
+      display: none; z-index: 10000; animation: slideUp 0.4s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    /* পপ-আপ */
+    #ad-modal {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center;
+    }
+    .modal-content { background: var(--card); padding: 25px; border-radius: 20px; width: 85%; max-width: 320px; text-align: center; border: 1px solid var(--border); }
+    #qr-preview { width: 100%; border: 5px solid white; border-radius: 10px; margin: 15px 0; }
+    #qrcode { background: white; padding: 15px; border-radius: 15px; display: inline-block; margin-top: 15px; }
+  </style>
+</head>
+<body>
+
+  <div class="ad-top">
+    <script type="text/javascript">
+      atOptions = { 'key' : 'b4163f90ac591880afe2eb689a0972a3', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+    </script>
+    <script type="text/javascript" src="https://www.highperformanceformat.com/b4163f90ac591880afe2eb689a0972a3/invoke.js"></script>
+  </div>
+
+  <a href="https://www.effectivegatecpm.com/adkccf8mm?key=5ff76540ce0a0bc3a9dd42d79309fa8e" target="_blank" class="promo-btn">
+    <i class="fas fa-gift"></i> Win Special Bonus Rewards!
+  </a>
+
+  <div class="main-card">
+    <h1>Smart QR Pro</h1>
+    <textarea id="linksInput" placeholder="এখানে আপনার লিংকটি দিন..."></textarea>
+    <button class="btn btn-primary" onclick="generateBrandedQR()">তৈরি করুন</button>
+
+    <div id="output" style="display:none;">
+      <div id="short-box">
+        <span id="shortUrl"></span>
+        <button class="copy-btn" onclick="copyToClipboard()"><i class="fas fa-copy"></i> কপি</button>
+      </div>
+      <div id="qrcode"></div>
+      <button class="btn btn-success" onclick="openAdModal()">ডাউনলোড করুন</button>
+    </div>
+  </div>
+
+  <div class="ad-bottom">
+    <script async="async" data-cfasync="false" src="https://pl28320363.effectivegatecpm.com/8d3772de8a11e39dbb8301225e76305b/invoke.js"></script>
+    <div id="container-8d3772de8a11e39dbb8301225e76305b"></div>
+  </div>
+
+  <div id="ad-modal">
+    <div class="modal-content">
+      <h4 style="margin:0;">ডাউনলোড আনলক করুন</h4>
+      <p style="font-size: 12px; color: #94a3b8;">নিচের বিজ্ঞাপনে ক্লিক করলে ছবি আসবে</p>
+      
+      <a href="https://www.effectivegatecpm.com/adkccf8mm?key=5ff76540ce0a0bc3a9dd42d79309fa8e" 
+         target="_blank" onclick="revealQR()" 
+         style="color: #f59e0b; font-weight: bold; text-decoration: none; display: block; padding: 12px; border: 2px dashed #f59e0b; border-radius: 10px; margin-top: 10px;">
+         👉 CLICK HERE TO UNLOCK 👈
+      </a>
+
+      <div id="qr-reveal-area" style="display:none;">
+        <p style="font-size: 11px; margin-top: 15px; color: #22c55e;">ছবির ওপর চেপে ধরে "Download Image" দিন</p>
+        <img id="qr-preview" src="" alt="QR Preview">
+        <button class="btn btn-primary" onclick="closeModal()" style="padding: 10px;">বন্ধ করুন</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"><i class="fas fa-check-circle"></i> কপি হয়েছে!</div>
+
+  <script>
+    function generateBrandedQR() {
+      const input = document.getElementById('linksInput').value.trim();
+      if (!input) return alert("লিংক দিন!");
+
+      // আপনার নাম এবং র‍্যান্ডম ক্যারেক্টার দিয়ে ছোট শর্ট লিংক
+      const randomStr = Math.random().toString(36).substring(2, 6);
+      const shortLink = "https://bdbusloveratik65.com/" + randomStr;
+
+      document.getElementById('shortUrl').innerText = shortLink;
+
+      const qrDiv = document.getElementById('qrcode');
+      qrDiv.innerHTML = "";
+      new QRCode(qrDiv, { text: shortLink, width: 180, height: 180 });
+
+      document.getElementById('output').style.display = 'block';
+    }
+
+    function copyToClipboard() {
+      const text = document.getElementById('shortUrl').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById('toast');
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 2000);
+      });
+    }
+
+    function openAdModal() { document.getElementById('ad-modal').style.display = 'flex'; }
+    function revealQR() {
+      const canvas = document.querySelector('#qrcode canvas');
+      if(canvas) {
+        document.getElementById('qr-preview').src = canvas.toDataURL("image/png");
+        setTimeout(() => { document.getElementById('qr-reveal-area').style.display = 'block'; }, 1000);
+      }
+    }
+    function closeModal() {
+      document.getElementById('ad-modal').style.display = 'none';
+      document.getElementById('qr-reveal-area').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
